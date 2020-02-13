@@ -1,22 +1,29 @@
-﻿using System;
-using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Player : MonoBehaviour
 {
 				public Rigidbody2D playerBody;
 				private Vector2 velocity;
-				private TimeGameController gameController;
-				public bool CanBeControlled { get; private set; }
+				private GameController gameController;
+
+				public bool CanBeControlled { get; private set; } = true;
 
 				private void MoveToStartPosition()
 				{
 								this.transform.position = gameController.PlayerStartPosition;
 				}
 
-				public void Kill()
+				public void TryKill(bool freeze = true)
 				{
-								Freeze();
+								Kill(freeze);
+				}
+
+				private void Kill(bool freeze)
+				{
+								gameController.GameOver = true;
+								if(freeze)
+												Freeze();
+								Time.timeScale = 0;
 								Shatter();
 				}
 
@@ -28,8 +35,9 @@ public class Player : MonoBehaviour
 				public void Respawn()
 				{
 								MoveToStartPosition();
-								playerBody.bodyType = RigidbodyType2D.Dynamic;
-								CanBeControlled = true;
+								velocity = Vector2.zero;
+								Unfreeze();
+								Time.timeScale = 1;
 				}
 
 				public void Won()
@@ -47,6 +55,7 @@ public class Player : MonoBehaviour
 
 								playerBody.bodyType = RigidbodyType2D.Static;
 								CanBeControlled = false;
+
 				}
 
 				public void Unfreeze()
@@ -55,24 +64,21 @@ public class Player : MonoBehaviour
 								CanBeControlled = true;
 								playerBody.velocity = velocity;
 				}
-				private void OnCollisionEnter2D(Collision2D collision)
-				{
-								if (collision.collider.CompareTag("Hazard") || collision.collider.CompareTag("Enemy")) {
-												gameController.GameOver = true;
-								}
-				}
 
 				private void OnTriggerEnter2D(Collider2D collider)
 				{
 								if (collider.CompareTag("End")) {
 												gameController.GameWon = true;
+								} else if (collider.CompareTag("Dark")) {
+												gameController.EnableDarkMode();
 								}
 				}
 
 				private void Start()
 				{
-								gameController = GameObject.FindGameObjectWithTag("GameController").GetComponent<TimeGameController>();
+								gameController = FindObjectOfType<GameController>();
 
 								MoveToStartPosition();
 				}
+
 }

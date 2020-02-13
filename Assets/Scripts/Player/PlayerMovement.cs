@@ -129,14 +129,15 @@ public class PlayerMovement : MonoBehaviour {
 
 				private void Move()
 				{
-								playerBody.AddForce(Vector2.right * Movement * moveForce);
-								playerBody.AddTorque(-Movement * torque);
+								playerBody.AddForce(Vector2.right * Movement * moveForce, ForceMode2D.Force);
+								playerBody.AddTorque(-Movement * torque, ForceMode2D.Force);
 								//Angular velocity can be positive or negative depending on direction, so we limit both
 								playerBody.angularVelocity = Math.Max(Mathf.Min(playerBody.angularVelocity, maxAngularVelocity), -maxAngularVelocity);
 				}
 
 				private bool IsGrounded()
 				{
+								//TODO Check if it is better than we put this on a OnCollisionStay2D()
 								return Physics2D.Raycast(transform.position, Vector3.down, playerCollider.bounds.extents.y + rayLength, jumpBaseMask);
 				}
 
@@ -247,13 +248,10 @@ public class PlayerMovement : MonoBehaviour {
 								canMoveInAir = true;
 				}
 
-				private void Update()
-				{
-								TryMove();
-				}
-
 				private void FixedUpdate()
 				{
+								TryMove();
+
 								if (isGrounded = IsGrounded()) {
 												ReleaseFromWall();
 								}

@@ -1,18 +1,14 @@
-﻿using System.Collections;
+﻿using Cinemachine;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
 public class TimeGameController : GameController {
+
+				public float darkModeTime;
+
 				public TextMeshProUGUI timeText;
 				private float elapsedTime = 0;
-
-				public Transform checkpointHolder;
-				public Vector2 PlayerStartPosition { get; private set; }
-
-				private Player player;
-
-				//Respawning
-				public float waitTimeForRespawn;
 
 				private void TryCountTime()
 				{
@@ -31,32 +27,9 @@ public class TimeGameController : GameController {
 								timeText.text = string.Format("{0:F}", elapsedTime);
 				}
 
-				protected override void ProcessGameOver()
+				protected override void Start()
 				{
-								foreach(Transform checkpointTransform in checkpointHolder) {
-												if(checkpointTransform.GetComponent<Checkpoint>().Claimed)
-																PlayerStartPosition = checkpointTransform.position;
-								}
-								GameOver = false;
-								player.Kill();
-								StartCoroutine(WaitBeforeRespawning());
-				}
-
-				private IEnumerator WaitBeforeRespawning()
-				{
-								yield return new WaitForSeconds(waitTimeForRespawn);
-								player.Respawn();
-				}
-
-				protected override void ProcessGameWon()
-				{
-								player.Won();
-								Time.timeScale = 0;
-				}
-
-				private void Start()
-				{
-								player = FindObjectOfType<Player>();
+								base.Start();
 								UpdateTimeText();
 				}
 
@@ -65,4 +38,26 @@ public class TimeGameController : GameController {
 								TryCountTime();
 				}
 
+				protected override void ProcessPostGameOver()
+				{
+								FreeCamera();
+								StartCoroutine(WaitBeforeRespawning());
+				}
+
+				protected override void ProcessPostGameWon()
+				{
+								print("Game Won");
+				}
+
+				protected override void ProcessPostDarkMode()
+				{
+								StopCoroutine("DarkModeLifespan");
+								StartCoroutine(DarkModeLifespan());
+				}
+
+				private IEnumerator DarkModeLifespan()
+				{
+								yield return new WaitForSeconds(darkModeTime);
+								DisableDarkMode();
+				}
 }

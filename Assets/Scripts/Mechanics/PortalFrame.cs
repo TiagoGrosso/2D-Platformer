@@ -33,8 +33,6 @@ public class PortalFrame : MonoBehaviour
 				{
 								if (canTeleport && collider.CompareTag("Player"))
 												Teleport(collider);
-
-								print(otherFrame.transform.position);
 				}
 
 				public void ResetPortal()

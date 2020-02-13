@@ -8,7 +8,6 @@ public class Platform : MonoBehaviour
 				public Collider2D platformCollider;
 				public float waitBeforeNotLettingPass;
 
-				private bool tryingToPass = false;
 				private PlayerControls playerControls;
 				private Collider2D playerCollider;
 				private Coroutine dontLetPassCoroutine;
@@ -23,7 +22,6 @@ public class Platform : MonoBehaviour
 
 				private IEnumerator DontLetPlayerPassThrough()
 				{
-								tryingToPass = false;
 								yield return new WaitForSeconds(waitBeforeNotLettingPass);
 								Physics2D.IgnoreCollision(playerCollider, platformCollider, false);
 				}

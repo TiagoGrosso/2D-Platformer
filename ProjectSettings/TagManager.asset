@@ -11,6 +11,11 @@ TagManager:
   - End
   - Portal
   - Tunnel
+  - Firewall
+  - Global Light
+  - Dark
+  - ResetableWorld
+  - Perishable
   layers:
   - Default
   - TransparentFX
@@ -22,7 +27,7 @@ TagManager:
   - 
   - Player
   - Wall
-  - 
+  - Bullets
   - 
   - 
   - 
