@@ -1,8 +1,6 @@
-﻿using Pathfinding.Ionic.Zip;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UDP.Common.MiniJSON;
 
 public class SaveAndLoad : MonoBehaviour {
 				public string serializedLevel;
