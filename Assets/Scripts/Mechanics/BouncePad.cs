@@ -1,15 +1,21 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO.Compression;
 using UnityEngine;
 using UnityEngine.Experimental.XR;
 
+[JsonObject(MemberSerialization.OptIn)]
 public class BouncePad : MonoBehaviour
 {
+				[JsonProperty]
 				public float bounceForce;
+				[JsonProperty]
 				public float bouncePadHeight;
+				[JsonProperty]
 				public float bouncePadSpeed;
+				[JsonProperty]
 				public float resetTime;
 				private float resetTimeCount = 0;
 				private bool canBounce = true;

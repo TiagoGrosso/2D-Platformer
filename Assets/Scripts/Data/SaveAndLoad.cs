@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization.Json;
 using UnityEngine;
 
+//WIP
 public class SaveAndLoad : MonoBehaviour {
 				public string serializedLevel;
 				public GameObject floor;
@@ -18,9 +21,17 @@ public class SaveAndLoad : MonoBehaviour {
 												platforms = ConvertObjectsToSerializables("Platforms", gameObject => new PlatformObject(gameObject)),
 								};
 
-								serializedLevel = JsonUtility.ToJson(level, true);
+								//serializedLevel = JsonUtility.ToJson(level, true);
 
-								InstantiateLevel();
+								ObjectMovement objectMovement = FindObjectOfType<ObjectMovement>();
+								BaseObject baseObject = new BaseObject(objectMovement.transform.parent.gameObject);
+								baseObject.objectMovement = objectMovement;
+								baseObject.components.Add("ObjectMovement", new MonoBehaviour[] { objectMovement, objectMovement });
+								baseObject.components.Add("BouncePad", new MonoBehaviour[] { FindObjectOfType<BouncePad>() });
+
+								print(JsonConvert.SerializeObject(baseObject, Formatting.Indented));
+
+								//InstantiateLevel();
 				}
 
 				public T[] ConvertObjectsToSerializables<T>(string parentName, Func<GameObject, T> constructor) where T : BaseObject
@@ -28,8 +39,6 @@ public class SaveAndLoad : MonoBehaviour {
 								Transform parent = GameObject.Find(parentName).transform;
 
 								List<T> objectsToSerialize = new List<T>();
-
-
 
 								foreach (Transform child in parent) {
 												objectsToSerialize.Add(constructor(child.gameObject));

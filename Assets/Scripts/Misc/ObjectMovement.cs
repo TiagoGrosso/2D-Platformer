@@ -1,12 +1,16 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
+[JsonObject(MemberSerialization.OptIn)]
 public class ObjectMovement : MonoBehaviour
 {
+				[JsonProperty]
 				public Vector2[] targets;
+
+				[JsonProperty]
 				public float speed;
 
 				private int curTarget;

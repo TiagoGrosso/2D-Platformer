@@ -8,9 +8,13 @@ public class PlatformObject : BaseObject
 {
 				public float speed;
 				public Vector2[] targets;
+				public Dictionary<string, int> testMap = new Dictionary<string, int>();
 
 				public PlatformObject(GameObject platform) : base (platform)
 				{
+								testMap.Add("hello", 1);
+								testMap.Add("yello", 2);
+
 								try {
 												ObjectMovement objectMovement = platform.GetComponent<ObjectMovement>();
 												speed = objectMovement.speed;
