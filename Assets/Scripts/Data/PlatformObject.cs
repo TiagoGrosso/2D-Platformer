@@ -1,39 +1,37 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[Serializable]
+[Obsolete("Replaced by [OneComponentObject)")]
 public class PlatformObject : BaseObject
 {
-				public float speed;
-				public Vector2[] targets;
-				public Dictionary<string, int> testMap = new Dictionary<string, int>();
+				public ObjectMovement.Data? objectMovementData;
 
 				public PlatformObject(GameObject platform) : base (platform)
 				{
-								testMap.Add("hello", 1);
-								testMap.Add("yello", 2);
-
 								try {
-												ObjectMovement objectMovement = platform.GetComponent<ObjectMovement>();
-												speed = objectMovement.speed;
-												targets = objectMovement.targets;
+												objectMovementData = platform.GetComponent<ObjectMovement>().data;
 								} catch {
 												//Do nothing, just skip
 								}
 				}
 
+				[JsonConstructor]
+				public PlatformObject()
+				{
+								
+				}
+
 				public override GameObject Deserialize(GameObject prefab)
 				{
 								GameObject platform = base.Deserialize(prefab);
-								ObjectMovement objectMovement = platform.GetComponent<ObjectMovement>();
 
-								if (targets.Length != 0) {
-												objectMovement.speed = speed;
-												objectMovement.targets = targets;
-								} else
-												GameObject.Destroy(objectMovement);
+								if (this.objectMovementData.HasValue) {
+												ObjectMovement objectMovement = platform.AddComponent<ObjectMovement>();
+												objectMovement.data = objectMovementData.GetValueOrDefault();
+								}
 
 								return platform;
 				}

@@ -34,8 +34,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targets:
-  - {x: -25, y: 1}
-  - {x: -15, y: 1}
+  - {x: 1, y: 1}
+  - {x: 1, y: 1}
   speed: 3
 --- !u!1001 &4453344659142911549
 PrefabInstance:
@@ -44,11 +44,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3660446760391966751, guid: cce37f9a4fa2f88409595b0e3491d194,
-        type: 3}
-      propertyPath: m_Name
-      value: Moving Platform
-      objectReference: {fileID: 0}
     - target: {fileID: 3660446760391966744, guid: cce37f9a4fa2f88409595b0e3491d194,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -103,6 +98,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3660446760391966751, guid: cce37f9a4fa2f88409595b0e3491d194,
+        type: 3}
+      propertyPath: m_Name
+      value: Moving Platform Variant
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cce37f9a4fa2f88409595b0e3491d194, type: 3}

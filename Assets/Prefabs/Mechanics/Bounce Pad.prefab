@@ -47,6 +47,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -120,7 +121,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcce233619fba6b44b6045f2e91f1c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bounceForce: 100
-  bouncePadHeight: 0.5
-  bouncePadSpeed: 20
-  resetTime: 1
+  data:
+    bounceForce: 90
+    bouncePadHeight: 0.5
+    bouncePadSpeed: 5
+    resetTime: 1
