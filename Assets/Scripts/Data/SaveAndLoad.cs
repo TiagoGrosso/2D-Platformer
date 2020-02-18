@@ -1,36 +1,60 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Runtime.Serialization.Json;
 using UnityEngine;
 
 //WIP
 public class SaveAndLoad : MonoBehaviour {
+
+				public const string PREFABS_BASE_PATH = "Prefabs/";
+				public const string LEVELS_BASE_PATH = "Levels/";
+
 				public string serializedLevel;
-				public GameObject floor;
-				public GameObject wall;
-				public GameObject crate;
-				public GameObject platform;
-				public GameObject checkpoint;
-				public GameObject bouncePad;
+
+				private string levelsPath;
+
+				private JsonSerializerSettings serializationSettings = new JsonSerializerSettings {
+								TypeNameHandling = TypeNameHandling.Auto
+				};
 
 				private void Start()
 				{
-								Level level = new Level {
-												floors = ConvertObjectsToSerializables("Floors", gameObject => new BaseObject(gameObject)),
-												walls = ConvertObjectsToSerializables("Walls", gameObject => new BaseObject(gameObject)),
-												crates = ConvertObjectsToSerializables("Crates", gameObject => new BaseObject(gameObject)),
-												platforms = ConvertObjectsToSerializables("Platforms", gameObject => new OneComponentObject<ObjectMovement, ObjectMovement.Data>(gameObject)),
-												checkpoints = ConvertObjectsToSerializables("Checkpoints", gameObject => new BaseObject(gameObject)),
-												bouncePads = ConvertObjectsToSerializables("BouncePads", gameObject => new OneComponentObject<BouncePad, BouncePad.Data>(gameObject))
-								};
-
-								serializedLevel = JsonConvert.SerializeObject(level, Formatting.Indented);
-								print(serializedLevel);
-								InstantiateLevel();
+								levelsPath = Application.persistentDataPath + "/" + LEVELS_BASE_PATH;
+								SerializeLevel("Level1");
+								DeserializeLevel("Level1");
 				}
 
-				public T[] ConvertObjectsToSerializables<T>(string parentName, Func<GameObject, T> constructor) where T : BaseObject
+				public void SerializeLevel(string levelName)
+				{
+								string serializedLevel = JsonConvert.SerializeObject(GetLevel(), Formatting.Indented, serializationSettings);
+								Directory.CreateDirectory(levelsPath);
+								File.WriteAllText(levelsPath + levelName + ".json", serializedLevel);
+				}
+
+				public void DeserializeLevel(string levelName)
+				{
+								string serializedLevel = File.ReadAllText(levelsPath + levelName + ".json");
+								Level level = JsonConvert.DeserializeObject<Level>(serializedLevel, serializationSettings);
+
+								InstantiateLevel(level);
+				}
+
+				private Level GetLevel()
+				{
+								Level level = new Level();
+								level.objects = new Dictionary<string, BaseObject[]>();
+
+								foreach (ObjectMapping objectMapping in ObjectMapping.MAPPINGS) {
+												level.objects.Add(objectMapping.ParentName, ConvertObjectsToSerializables(objectMapping.ParentName, objectMapping.Constructor));
+								}
+
+								return level;
+				}
+
+				private T[] ConvertObjectsToSerializables<T>(string parentName, Func<GameObject, T> constructor) where T : BaseObject
 				{
 								Transform parent = GameObject.Find(parentName).transform;
 
@@ -43,34 +67,53 @@ public class SaveAndLoad : MonoBehaviour {
 								return objectsToSerialize.ToArray();
 				}
 
-				public void InstantiateLevel()
+				private void InstantiateLevel(Level level)
 				{
-								Level level = JsonConvert.DeserializeObject<Level>(serializedLevel);
+								foreach (ObjectMapping objectMapping in ObjectMapping.MAPPINGS) {
+												GameObject prefab = Resources.Load<GameObject>(PREFABS_BASE_PATH + objectMapping.Path + objectMapping.Name);
+												InstantiateObjects(prefab, GameObject.Find(objectMapping.ParentName).transform, level.objects[objectMapping.ParentName]);
+								}
 
-								InstantiateObjects(floor, GameObject.Find("Floors").transform, level.floors);
-								InstantiateObjects(wall, GameObject.Find("Walls").transform, level.walls);
-								InstantiateObjects(crate, GameObject.Find("Crates").transform, level.crates);
-								InstantiateObjects(platform, GameObject.Find("Platforms").transform, level.platforms);
-								InstantiateObjects(checkpoint, GameObject.Find("Checkpoints").transform, level.checkpoints);
-								InstantiateObjects(bouncePad, GameObject.Find("BouncePads").transform, level.bouncePads);
-
-								//Create Firewall
+								//Create firewall
 				}
 
-				public void InstantiateObjects(GameObject prefab, Transform parent , BaseObject[] objectsToDeserialize)
+				private void InstantiateObjects(GameObject prefab, Transform parent, BaseObject[] objectsToDeserialize)
 				{
+								if (objectsToDeserialize == null || objectsToDeserialize.Length == 0)
+												return;
+
 								foreach (BaseObject obj in objectsToDeserialize)
 												obj.Deserialize(prefab).transform.parent = parent;
 				}
 
+				public class ObjectMapping {
+
+								public string Path { get; private set; }
+								public string Name { get; private set; }
+								public string ParentName { get; private set; }
+								public Func<GameObject, BaseObject> Constructor { get; private set; }
+
+								private ObjectMapping(string path, string name, string parentName, Func<GameObject, BaseObject> constructor)
+								{
+												this.Path = path;
+												this.Name = name;
+												this.ParentName = parentName;
+												this.Constructor = constructor;
+								}
+
+								public static readonly ObjectMapping[] MAPPINGS = new ObjectMapping[] {
+												new ObjectMapping("Objects/", "Floor", "Floors", gameObject => new BaseObject(gameObject)),
+												new ObjectMapping("Objects/", "Wall", "Walls", gameObject => new BaseObject(gameObject)),
+												new ObjectMapping("Objects/", "Crate", "Crates", gameObject => new BaseObject(gameObject)),
+												new ObjectMapping("Objects/", "Checkpoint", "Checkpoints", gameObject => new BaseObject(gameObject)),
+												new ObjectMapping("Objects/", "Platform", "Platforms", gameObject => new OneComponentObject<ObjectMovement, ObjectMovement.Data>(gameObject)),
+												new ObjectMapping("Mechanics/", "Bounce Pad", "BouncePads", gameObject => new OneComponentObject<ObjectMovement, ObjectMovement.Data>(gameObject))
+				};
+
+				}
+
 				[Serializable]
 				public struct Level {
-
-								public BaseObject[] floors;
-								public BaseObject[] walls;
-								public BaseObject[] crates;
-								public OneComponentObject<ObjectMovement, ObjectMovement.Data>[] platforms;
-								public BaseObject[] checkpoints;
-								public OneComponentObject<BouncePad, BouncePad.Data>[] bouncePads;
+								public Dictionary<string, BaseObject[]> objects;
 				}
 }
