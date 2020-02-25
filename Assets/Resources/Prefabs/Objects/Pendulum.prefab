@@ -7,10 +7,39 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1564149205, guid: 987d44c603cc8064d882495de86c1d35, type: 3}
+      propertyPath: pushForce
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6056489473977815596, guid: 987d44c603cc8064d882495de86c1d35,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 6056489473977815598, guid: 987d44c603cc8064d882495de86c1d35,
+        type: 3}
+      propertyPath: m_Material
+      value: 
+      objectReference: {fileID: 6200000, guid: 64e1954735799674fbc36809ec206029, type: 2}
+    - target: {fileID: 6056489473977815599, guid: 987d44c603cc8064d882495de86c1d35,
+        type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6056489473977815599, guid: 987d44c603cc8064d882495de86c1d35,
+        type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6056489473977815599, guid: 987d44c603cc8064d882495de86c1d35,
+        type: 3}
+      propertyPath: m_Color.b
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6056489475155275154, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
       propertyPath: m_Name
-      value: Pendulum Variant
+      value: Pendulum
       objectReference: {fileID: 0}
     - target: {fileID: 6056489475155275155, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
@@ -40,12 +69,12 @@ PrefabInstance:
     - target: {fileID: 6056489475155275155, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.2588191
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6056489475155275155, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9659258
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6056489475155275155, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
@@ -65,7 +94,7 @@ PrefabInstance:
     - target: {fileID: 6056489475155275155, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 30
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6056489475263493925, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}
@@ -76,35 +105,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.y
       value: -2.056
-      objectReference: {fileID: 0}
-    - target: {fileID: 6056489473977815596, guid: 987d44c603cc8064d882495de86c1d35,
-        type: 3}
-      propertyPath: m_TagString
-      value: Untagged
-      objectReference: {fileID: 0}
-    - target: {fileID: 6056489473977815599, guid: 987d44c603cc8064d882495de86c1d35,
-        type: 3}
-      propertyPath: m_Color.r
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6056489473977815599, guid: 987d44c603cc8064d882495de86c1d35,
-        type: 3}
-      propertyPath: m_Color.g
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6056489473977815599, guid: 987d44c603cc8064d882495de86c1d35,
-        type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6056489473977815598, guid: 987d44c603cc8064d882495de86c1d35,
-        type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 6200000, guid: 64e1954735799674fbc36809ec206029, type: 2}
-    - target: {fileID: 1564149205, guid: 987d44c603cc8064d882495de86c1d35, type: 3}
-      propertyPath: pushForce
-      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6056489475263493926, guid: 987d44c603cc8064d882495de86c1d35,
         type: 3}

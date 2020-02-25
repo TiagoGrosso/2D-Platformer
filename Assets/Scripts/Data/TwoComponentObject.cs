@@ -27,9 +27,8 @@ public class TwoComponentObject<C1, D1, C2, D2> : BaseObject where C1 : MonoBeha
 
 				}
 
-				public class DifferingDataTypesException : Exception {
+				public new static Func<GameObject, TwoComponentObject<C1, D1, C2, D2>> CONSTRUCTOR = gameObject => new TwoComponentObject<C1, D1, C2, D2>(gameObject);
 
-				}
 }
 
 

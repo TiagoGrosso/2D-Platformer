@@ -46,6 +46,7 @@ SpriteRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -95,10 +96,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletPrefab: {fileID: 3782769172478005877, guid: e9c1b0867fc9072499947dc3ac4acdbe,
     type: 3}
-  reloadTime: 4
-  magCapacity: 10
-  burstSize: 3
-  burstShotDelay: 0.2
-  cooldown: 2
-  range: 15
-  fixedTarget: 0
+  data:
+    reloadTime: 4
+    magCapacity: 10
+    burstSize: 3
+    burstShotDelay: 0.2
+    cooldown: 2
+    range: 15
+    fixedTarget: 0

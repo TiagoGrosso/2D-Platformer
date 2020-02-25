@@ -132,7 +132,8 @@ public class PlayerMovement : MonoBehaviour {
 								playerBody.AddForce(Vector2.right * Movement * moveForce, ForceMode2D.Force);
 								playerBody.AddTorque(-Movement * torque, ForceMode2D.Force);
 								//Angular velocity can be positive or negative depending on direction, so we limit both
-								playerBody.angularVelocity = Math.Max(Mathf.Min(playerBody.angularVelocity, maxAngularVelocity), -maxAngularVelocity);
+								if(playerBody.bodyType != RigidbodyType2D.Static)
+												playerBody.angularVelocity = Math.Max(Mathf.Min(playerBody.angularVelocity, maxAngularVelocity), -maxAngularVelocity);
 				}
 
 				private bool IsGrounded()

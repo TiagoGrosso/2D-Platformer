@@ -39,7 +39,8 @@ namespace Newtonsoft.Json.Unity
             currentSettings.Converters.Add(new JsonVector3Converter());
             currentSettings.Converters.Add(new JsonVector4Converter());
             currentSettings.Converters.Add(new JsonQuaternionConverter());
-            
+            currentSettings.Converters.Add(new JsonColorConverter());
+
             JsonConvert.DefaultSettings = () => currentSettings;
             
             initialized = true;

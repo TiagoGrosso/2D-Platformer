@@ -1,20 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 
 public class LaserBeam : MonoBehaviour {
+
+				public Data data;
+				public LayerMask laserHitLayers;
+
 				private LineRenderer lineRenderer;
 				private EdgeCollider2D edgeCollider;
 				private Vector2 hitPoint = Vector2.positiveInfinity;
-				public LayerMask laserHitLayers;
-				public float startDelay;
-				public float cooldown;
-				public float firingTime;
+
 
 				// Start is called before the first frame update
 				void Start()
 				{
 								lineRenderer = gameObject.GetComponent<LineRenderer>();
+								lineRenderer.positionCount = 2;
 								lineRenderer.SetPosition(0, transform.position);
 								lineRenderer.SetPosition(1, transform.position);
 								lineRenderer.enabled = false;
@@ -23,21 +26,21 @@ public class LaserBeam : MonoBehaviour {
 
 				private IEnumerator StartDelay()
 				{
-								yield return new WaitForSeconds(startDelay);
+								yield return new WaitForSeconds(data.startDelay);
 								StartCoroutine(Cooldown());
 				}
 
 				private IEnumerator Cooldown()
 				{
 								ShutOff();
-								yield return new WaitForSeconds(cooldown);
+								yield return new WaitForSeconds(data.cooldown);
 								StartCoroutine(Firing());
 				}
 
 				private IEnumerator Firing()
 				{
 								Coroutine laserUpdate = StartCoroutine(UpdateLaser());
-								yield return new WaitForSeconds(firingTime);
+								yield return new WaitForSeconds(data.firingTime);
 								StopCoroutine(laserUpdate);
 								StartCoroutine(Cooldown());
 				}
@@ -88,5 +91,12 @@ public class LaserBeam : MonoBehaviour {
 
 								lineRenderer.SetPosition(1, transform.position);
 								lineRenderer.enabled = false;
+				}
+
+				[Serializable]
+				public struct Data {
+								public float startDelay;
+								public float cooldown;
+								public float firingTime;
 				}
 }

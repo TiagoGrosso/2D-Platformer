@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 public class Turret : MonoBehaviour {
@@ -8,32 +9,27 @@ public class Turret : MonoBehaviour {
 								ready, shooting, cooldown, reloading
 				}
 
+				public enum Prefab {
+								Missile, Bullet
+				}
+
+				public Data data;
+
 				private Dictionary<TurretState, Action> stateActions = new Dictionary<Turret.TurretState, Action>();
-
-				public GameObject bulletPrefab;
-
-				public float reloadTime;
-				public int magCapacity;
 				private int magSize;
 
-				public int burstSize;
-				public float burstShotDelay;
-
-				public float cooldown;
-				public float range;
-				public bool fixedTarget;
-
+				private GameObject bulletPrefab;
 				private Vector3 target;
 				private Transform playerTransform;
 				private TurretState state;
 
 				private Transform perishable;
 
-
 				private void Start()
 				{
 								LoadBullets();
 
+								bulletPrefab = Resources.Load<GameObject>("Prefabs" + Path.AltDirectorySeparatorChar + "Bullets" + Path.AltDirectorySeparatorChar + data.prefab.ToString());
 								playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
 								perishable = GameObject.FindGameObjectWithTag("Perishable").transform;
 
@@ -50,10 +46,10 @@ public class Turret : MonoBehaviour {
 
 				private bool CanSeePlayer()
 				{
-								Debug.DrawRay(transform.position, (playerTransform.position - transform.position).normalized * range, Color.black);
+								Debug.DrawRay(transform.position, (playerTransform.position - transform.position).normalized * data.range, Color.black);
 
 								RaycastHit2D hit;
-								if (hit = Physics2D.Raycast(transform.position, playerTransform.position - transform.position, range)) {
+								if (hit = Physics2D.Raycast(transform.position, playerTransform.position - transform.position, data.range)) {
 												return hit.collider.CompareTag("Player");
 								}
 								return false;
@@ -62,7 +58,7 @@ public class Turret : MonoBehaviour {
 				private void OnReady()
 				{
 								if (CanSeePlayer()) {
-												if (fixedTarget)
+												if (data.fixedTarget)
 																target = playerTransform.position;
 												state = TurretState.shooting;
 								}
@@ -80,7 +76,7 @@ public class Turret : MonoBehaviour {
 				private IEnumerator Cooldown()
 				{
 								triggeredCooldown = true;
-								yield return new WaitForSeconds(cooldown);
+								yield return new WaitForSeconds(data.cooldown);
 								state = Turret.TurretState.ready;
 								triggeredCooldown = false;
 				}
@@ -92,7 +88,7 @@ public class Turret : MonoBehaviour {
 								if (!triggeredShot)
 												Shoot();
 
-								if (shotCount == burstSize || magSize == 0) {
+								if (shotCount == data.burstSize || magSize == 0) {
 												triggeredShot = false;
 												shotCount = 0;
 												state = TurretState.cooldown;
@@ -109,7 +105,7 @@ public class Turret : MonoBehaviour {
 				private IEnumerator Reload()
 				{
 								waitingForReload = true;
-								yield return new WaitForSeconds(reloadTime);
+								yield return new WaitForSeconds(data.reloadTime);
 								state = TurretState.ready;
 								LoadBullets();
 								waitingForReload = false;
@@ -117,10 +113,10 @@ public class Turret : MonoBehaviour {
 
 				private void LoadBullets()
 				{
-								if (magCapacity > 0)
-												magSize = magCapacity;
+								if (data.magCapacity > 0)
+												magSize = data.magCapacity;
 								else
-												magSize = 10000;
+												magSize = int.MaxValue;
 				}
 
 
@@ -128,8 +124,8 @@ public class Turret : MonoBehaviour {
 				{
 								triggeredShot = true;
 
-								for (int i = 0; i < burstSize && i < magSize; ++i)
-												StartCoroutine(WaitThenFireBullet(i * burstShotDelay));
+								for (int i = 0; i < data.burstSize && i < magSize; ++i)
+												StartCoroutine(WaitThenFireBullet(i * data.burstShotDelay));
 				}
 
 				private IEnumerator WaitThenFireBullet(float delay)
@@ -142,13 +138,13 @@ public class Turret : MonoBehaviour {
 				{
 								++shotCount;
 
-								if(magCapacity > 0) //Easy way to make infinite ammo
+								if(data.magCapacity > 0) //Easy way to make infinite ammo
 												--magSize;
 				}
 
 				private void FireBullet()
 				{
-								if (!fixedTarget)
+								if (!data.fixedTarget)
 												target = playerTransform.position;
 
 								Vector2 direction = target - transform.position;
@@ -156,5 +152,19 @@ public class Turret : MonoBehaviour {
 								bullet.transform.up = direction; //FIX ME
 								bullet.GetComponent<Bullet>().Fire();
 								ShotFired();
+				}
+
+				[Serializable]
+				public struct Data {
+								public Prefab prefab;
+								public float reloadTime;
+								public int magCapacity;
+
+								public int burstSize;
+								public float burstShotDelay;
+
+								public float cooldown;
+								public float range;
+								public bool fixedTarget;
 				}
 }

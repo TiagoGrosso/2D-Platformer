@@ -5,19 +5,15 @@ using UnityEngine;
 
 public class PufferFish : MonoBehaviour
 {
-    public Vector2 inflatedScale;
-    public float cooldown;
-    public float inflatedDuration;
-    public float startDelay;
-    public float touchDelay;
-    public float inflateTime;
+    public Data data;
+
     private KillOnTouch killOnTouch;
     private float velocity;
     private Coroutine currentAction;
 
     private void Start()
     {
-        velocity = Vector2.Distance(Vector2.one, inflatedScale) / inflateTime;
+        velocity = Vector2.Distance(Vector2.one, data.inflatedScale) / data.inflateTime;
         killOnTouch = gameObject.GetComponent<KillOnTouch>();
         killOnTouch.kill = false;
         StartCoroutine(StartDelay());
@@ -25,32 +21,32 @@ public class PufferFish : MonoBehaviour
 
     private IEnumerator StartDelay()
     {
-        yield return new WaitForSeconds(startDelay);
+        yield return new WaitForSeconds(data.startDelay);
         StartCoroutine(Deflated());
     }
 
     private IEnumerator TouchDelay()
     {
-        yield return new WaitForSeconds(touchDelay);
+        yield return new WaitForSeconds(data.touchDelay);
         StartInflate();
     }
 
     private IEnumerator Deflated()
     {
-        yield return new WaitForSeconds(cooldown);
+        yield return new WaitForSeconds(data.cooldown);
         StartInflate();
     }
 
     private IEnumerator Inflated()
     {
-        yield return new WaitForSeconds(inflatedDuration);
+        yield return new WaitForSeconds(data.inflatedDuration);
         StartDeflate();
     }
 
     private void StartDeflate()
     {
         killOnTouch.kill = false;
-        transform.localScale = inflatedScale;
+        transform.localScale = data.inflatedScale;
         currentAction = StartCoroutine(Deflate());
         StartCoroutine(Deflated());
     }
@@ -76,14 +72,14 @@ public class PufferFish : MonoBehaviour
     {
         StartCoroutine(StopFlating());
         while (true) {
-            transform.localScale = Vector2.MoveTowards(transform.localScale, inflatedScale, velocity * Time.fixedDeltaTime);
+            transform.localScale = Vector2.MoveTowards(transform.localScale, data.inflatedScale, velocity * Time.fixedDeltaTime);
             yield return new WaitForFixedUpdate();
         }
     }
 
     private IEnumerator StopFlating()
     {
-        yield return new WaitForSeconds(inflateTime);
+        yield return new WaitForSeconds(data.inflateTime);
         StopCoroutine(currentAction);
     }
 
@@ -93,5 +89,15 @@ public class PufferFish : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(TouchDelay());
         }
+    }
+
+    [Serializable]
+    public struct Data {
+        public Vector2 inflatedScale;
+        public float cooldown;
+        public float inflatedDuration;
+        public float startDelay;
+        public float touchDelay;
+        public float inflateTime;
     }
 }

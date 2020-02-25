@@ -39,4 +39,5 @@ public class BaseObject
 
     }
 
+    public static Func<GameObject, BaseObject> CONSTRUCTOR = gameObject => new BaseObject(gameObject);
 }

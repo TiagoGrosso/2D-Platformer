@@ -30,7 +30,5 @@ public class ThreeComponentObject<C1, D1, C2, D2, C3, D3> : BaseObject where C1 
 
 				}
 
-				public class DifferingDataTypesException : Exception {
-
-				}
+				public new static Func<GameObject, ThreeComponentObject<C1, D1, C2, D2, C3, D3>> CONSTRUCTOR = gameObject => new ThreeComponentObject<C1, D1, C2, D2, C3, D3>(gameObject);
 }

@@ -24,8 +24,7 @@ public class OneComponentObject<C, D> : BaseObject where C : MonoBehaviour where
 
 				}
 
-				public class DifferingDataTypesException : Exception {
+				public new static Func<GameObject, OneComponentObject<C, D>> CONSTRUCTOR = gameObject => new OneComponentObject<C, D>(gameObject);
 
-				}
 }
 

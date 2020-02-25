@@ -3,16 +3,19 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public float speed;
+    public Data data;
 
     public LayerMask groundLayers;
 
-    public Rigidbody2D body;
-    public Collider2D enemyCollider;
+    private Rigidbody2D body;
+    private Collider2D enemyCollider;
     private int direction = 0;
 
     private void Start()
     {
+        body = GetComponent<Rigidbody2D>();
+        enemyCollider = GetComponent<Collider2D>();
+
         direction = Probability.RandomInCollection(new int[] { -1, 1 });
     }
 
@@ -44,6 +47,11 @@ public class Enemy : MonoBehaviour
 
     private void FixedUpdate()
     {
-        body.MovePosition(transform.position + (Vector3.right * speed * Time.fixedDeltaTime * direction));
+        body.MovePosition(transform.position + (Vector3.right * data.speed * Time.fixedDeltaTime * direction));
+    }
+
+    [Serializable]
+    public struct Data {
+        public float speed;
     }
 }

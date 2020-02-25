@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8368602715021970211}
   - component: {fileID: 8368602715021970208}
   - component: {fileID: 8368602715021970213}
+  - component: {fileID: 8225374500810789204}
   - component: {fileID: 8368602715021970210}
   m_Layer: 0
   m_Name: Puffer Fish
@@ -134,12 +135,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 507d7ab59638d324683a376bcac4b00c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inflatedScale: {x: 2.2, y: 2.2}
-  cooldown: 5
-  inflatedDuration: 3
-  startDelay: 0
-  touchDelay: 0.25
-  inflateTime: 0.13
+  data:
+    inflatedScale: {x: 2.2, y: 2.2}
+    cooldown: 5
+    inflatedDuration: 3
+    startDelay: 0
+    touchDelay: 0.25
+    inflateTime: 0.13
+--- !u!114 &8225374500810789204
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8368602715021970223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01f045dc1e0b348468333497bfc5f893, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  data:
+    speed: 0
+  groundLayers:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!114 &8368602715021970210
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -154,12 +154,10 @@ LineRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Positions:
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 1}
+  m_Positions: []
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.3
+    widthMultiplier: 0.1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -206,7 +204,7 @@ LineRenderer:
       m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
-    alignment: 1
+    alignment: 0
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
@@ -224,11 +222,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 968dc05f632f99b4c9abceef1d94f971, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  data:
+    startDelay: 0
+    cooldown: 2
+    firingTime: 1
   laserHitLayers:
     serializedVersion: 2
     m_Bits: 1555
-  cooldown: 2
-  firingTime: 1
 --- !u!114 &6551593548622654625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -242,3 +242,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   freeze: 1
+  kill: 1

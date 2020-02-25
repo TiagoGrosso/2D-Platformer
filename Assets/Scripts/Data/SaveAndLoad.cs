@@ -2,17 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Json;
 using UnityEngine;
+using UnityEngine.UDP.Common.MiniJSON;
 
 //WIP
 public class SaveAndLoad : MonoBehaviour {
 
-				public const string PREFABS_BASE_PATH = "Prefabs/";
-				public const string LEVELS_BASE_PATH = "Levels/";
-
-				public string serializedLevel;
+				public const string PREFABS_BASE_PATH = "Prefabs";
+				public const string LEVELS_BASE_PATH = "Levels";
 
 				private string levelsPath;
 
@@ -22,7 +19,7 @@ public class SaveAndLoad : MonoBehaviour {
 
 				private void Start()
 				{
-								levelsPath = Application.persistentDataPath + "/" + LEVELS_BASE_PATH;
+								levelsPath = Application.persistentDataPath + Path.AltDirectorySeparatorChar + LEVELS_BASE_PATH + Path.AltDirectorySeparatorChar;								
 								SerializeLevel("Level1");
 								DeserializeLevel("Level1");
 				}
@@ -56,11 +53,16 @@ public class SaveAndLoad : MonoBehaviour {
 
 				private T[] ConvertObjectsToSerializables<T>(string parentName, Func<GameObject, T> constructor) where T : BaseObject
 				{
-								Transform parent = GameObject.Find(parentName).transform;
+								GameObject parentObject = GameObject.Find(parentName);
+
+								if (!parentObject) {
+												Debug.LogWarning($"Parent object '{parentName}' not found");
+												return new T[] { }; 
+								}
 
 								List<T> objectsToSerialize = new List<T>();
 
-								foreach (Transform child in parent) {
+								foreach (Transform child in parentObject.transform) {
 												objectsToSerialize.Add(constructor(child.gameObject));
 								}
 
@@ -70,8 +72,21 @@ public class SaveAndLoad : MonoBehaviour {
 				private void InstantiateLevel(Level level)
 				{
 								foreach (ObjectMapping objectMapping in ObjectMapping.MAPPINGS) {
-												GameObject prefab = Resources.Load<GameObject>(PREFABS_BASE_PATH + objectMapping.Path + objectMapping.Name);
-												InstantiateObjects(prefab, GameObject.Find(objectMapping.ParentName).transform, level.objects[objectMapping.ParentName]);
+												GameObject prefab = Resources.Load<GameObject>(PREFABS_BASE_PATH + Path.AltDirectorySeparatorChar + objectMapping.Path + Path.AltDirectorySeparatorChar + objectMapping.Name);
+
+												if (!prefab) {
+																Debug.LogError($"Could not find prefab {objectMapping.Name} in {objectMapping.Path}.");
+																continue;
+												}
+
+												GameObject parentObject = GameObject.Find(objectMapping.ParentName);
+
+												if (!parentObject) {
+																parentObject = Instantiate(new GameObject(), GameObject.Find("World").transform);
+																parentObject.name = objectMapping.ParentName;
+												}
+
+												InstantiateObjects(prefab, parentObject.transform, level.objects[objectMapping.ParentName]);
 								}
 
 								//Create firewall
@@ -102,12 +117,26 @@ public class SaveAndLoad : MonoBehaviour {
 								}
 
 								public static readonly ObjectMapping[] MAPPINGS = new ObjectMapping[] {
-												new ObjectMapping("Objects/", "Floor", "Floors", gameObject => new BaseObject(gameObject)),
-												new ObjectMapping("Objects/", "Wall", "Walls", gameObject => new BaseObject(gameObject)),
-												new ObjectMapping("Objects/", "Crate", "Crates", gameObject => new BaseObject(gameObject)),
-												new ObjectMapping("Objects/", "Checkpoint", "Checkpoints", gameObject => new BaseObject(gameObject)),
-												new ObjectMapping("Objects/", "Platform", "Platforms", gameObject => new OneComponentObject<ObjectMovement, ObjectMovement.Data>(gameObject)),
-												new ObjectMapping("Mechanics/", "Bounce Pad", "BouncePads", gameObject => new OneComponentObject<ObjectMovement, ObjectMovement.Data>(gameObject))
+												new ObjectMapping("Objects", "Floor", "Floors", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Objects", "Wall", "Walls", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Objects", "Crate", "Crates", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Objects", "Checkpoint", "Checkpoints", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Objects", "Platform", "Platforms", OneComponentObject<ObjectMovement, ObjectMovement.Data>.CONSTRUCTOR),
+												new ObjectMapping("Objects", "Pendulum", "Pendulums", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "Bounce Pad", "BouncePads", OneComponentObject<BouncePad, BouncePad.Data>.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "Dark", "Darks", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "End", "Ends", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "Speed Boost", "SpeedBoosts", OneComponentObject<SpeedBoost, SpeedBoost.Data>.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "Tunnel", "Tunnels", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "Slow Zone", "SlowZones", OneComponentObject<SlowZone, SlowZone.Data>.CONSTRUCTOR),
+												new ObjectMapping("Mechanics", "Portal", "Portals", PortalObject.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Enemy", "Basic Enemies", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Firewall", "Firewall", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Hazard", "BasicHazards", BaseObject.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Laser", "Lasers", LaserObject.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Turret", "Turrets", OneComponentObject<Turret, Turret.Data>.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Puffer Fish", "PufferFishes", TwoComponentObject<Enemy, Enemy.Data, PufferFish, PufferFish.Data>.CONSTRUCTOR),
+												new ObjectMapping("Enemies", "Pendulum Hazard", "PendulumHazards", BaseObject.CONSTRUCTOR)
 				};
 
 				}
